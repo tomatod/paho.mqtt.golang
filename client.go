@@ -111,6 +111,8 @@ type Client interface {
 	// a new go routine.
 	// callback must be safe for concurrent use by multiple goroutines.
 	AddRoute(topic string, callback MessageHandler)
+	// DeleteRoutes allow you to delete handlers for messages on specific topics.
+	DeleteRoutes(topics ...string)
 	// OptionsReader returns a ClientOptionsReader which is a copy of the clientoptions
 	// in use by the client.
 	OptionsReader() ClientOptionsReader
@@ -183,6 +185,13 @@ func NewClient(o *ClientOptions) Client {
 func (c *client) AddRoute(topic string, callback MessageHandler) {
 	if callback != nil {
 		c.msgRouter.addRoute(topic, callback)
+	}
+}
+
+// DeleteRoutes allow you to delete handlers for messages on specific topics.
+func (c *client) DeleteRoutes(topics ...string) {
+	for _, topic := range topics {
+		c.msgRouter.deleteRoute(topic)
 	}
 }
 
